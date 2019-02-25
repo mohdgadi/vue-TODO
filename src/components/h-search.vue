@@ -21,11 +21,9 @@ export default class HSearch extends Vue {
     public message: string = '';
 
    public save() {
-       console.log(this.message);
-    //    this.message = '';
-    //    console.log("after",this.message);
-    //    this.$forceUpdate();
-        this.$emit("enter")
+       this.$emit('enter', this.message);
+       this.message = '';
+       this.$forceUpdate();
     }
 }
 </script>
