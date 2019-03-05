@@ -5,13 +5,24 @@
     <h1> Items </h1>
     <div class="items">
         <div class="list-items" v-for="item in items" :key="item.id">
-            <span>ID:{{ item.id }}, Name: {{ item.name }}, createdAt: {{ item.createdAt }}</span>
+            <span>ID:{{ item.id }}, Name: {{ item.name }}, createdAt: {{ item.createdAt.toDateString() }}</span>
             <v-btn color="error" @click="deleteItem(item.id)">Delete</v-btn>
             <!-- <button @click="deleteItem(item.id)">Delete</button> -->
         </div>
     </div>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.list-items {
+    border:3px solid black;
+    margin-bottom: 2px;
+    padding: 3px;
+    background-color: aquamarine;
+    text-align: center;
+}
+</style>
+
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
@@ -34,26 +45,30 @@ const namespace = 'list';
         ...mapState("list", ["items", "createdAt"]),
     },
    components: {
-       'h-search': HSearch,
+       HSearch,
    }
 })
 
 
-export default class Home extends Vue {
+export default class List extends Vue {
     public items!: Item[];
 
     public save(message: string) {
         this.$store
         .dispatch(`${namespace}/addItem`, {
-            val: message,
+            name: message,
         });
     }
 
     public deleteItem(id: string) {
         this.$store
-        .dispatch(`${namespace}/deleteItem`, {
-            val: id,
-        });
+            .dispatch(`${namespace}/deleteItem`, {
+                val: id,
+            })
+            .then((i) => {
+                console.log("item added succesfully", i);
+            })
+            .catch();
     }
 
    public mounted() {

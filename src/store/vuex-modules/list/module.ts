@@ -13,15 +13,15 @@ export interface ListState {
 const state: ListState = {
     items: [],
     createdAt: new Date(),
-}
+};
 
 const injections = {
-    ListService: inversifyContainer.get<ListService>('ListService')
+    ListService: inversifyContainer.get<ListService>('ListService'),
 };
 
 export const getters: GetterTree<ListState, RootState> = {
     items() {
-        return state.items || [];
+        return state.items;
     },
 
     createdAt() {
@@ -36,34 +36,32 @@ export const getters: GetterTree<ListState, RootState> = {
 export const mutations: MutationTree<ListState> = {
     addItem(state: ListState, val: Item) {
         state.items.push(val);
-        console.log("adding item");
     },
 
     deleteItem(state: ListState, id: string) {
-      console.log(id, "dekete");
       state.items = state.items.filter((item) => item.id !== id);
     },
 
     deleteList(state: ListState, val: string) {
         state.createdAt = new Date();
         state.items = [];
-    }
-}
+    },
+};
 
 export const actions: ActionTree<ListState, RootState> = {
 
-    addItem({commit}, { val }): any {
-        let i: Item = { id: uuidv1(), name: val, createdAt: new Date()};
+    addItem({commit}, { name }): any {
+        const i: Item = { id: uuidv1(), name , createdAt: new Date()};
         return new Promise((resolve, reject) => {
             injections.ListService.addItemRequest(
                 i,
                 () => {
                     commit('addItem', i);
-                    resolve();
+                    resolve(i);
                 },
-                err => reject('Error in adding item'),
-            )}
-        )},
+                () => reject('Error in adding item'),
+            ); },
+        ); },
 
         deleteItem({commit}, { val }): any {
             return new Promise((resolve, reject) => {
@@ -72,10 +70,10 @@ export const actions: ActionTree<ListState, RootState> = {
                     () => {
                         commit('deleteItem', val);
                         resolve();
-                    }, 
+                    },
                     err => reject('Error in adding item'),
-                )}
-            )},
+                ); },
+            ); },
 };
 
 const namespaced: boolean = true;

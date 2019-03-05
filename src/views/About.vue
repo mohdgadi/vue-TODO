@@ -21,7 +21,6 @@ button {
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component
-
 export default class About extends Vue {
   public page: string = 'MOHD';
   public counter: number = 0;
